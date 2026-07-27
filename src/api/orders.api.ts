@@ -14,6 +14,12 @@ export interface CheckoutPayment {
 
 export interface CheckoutInput {
   storeId?: string;
+  source?: "POS" | "DELIVERY";
+  deliveryAddress?: string;
+  deliveryPhone?: string;
+  memberId?: string;
+  pointsToRedeem?: number;
+  couponId?: string;
   items: CheckoutItem[];
   discountCents?: number;
   taxCents?: number;

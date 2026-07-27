@@ -153,14 +153,14 @@ export default function PublicOrderPage() {
             return (
               <div
                 key={product.id}
-                className="card-table"
+                className="card-table flex h-full flex-col"
               >
                 {imageUrl && (
                   <div className="aspect-square w-full overflow-hidden bg-slate-50">
                     <img src={imageUrl} alt="" className="h-full w-full object-cover" />
                   </div>
                 )}
-                <div className="p-4">
+                <div className="flex flex-1 flex-col p-4">
                   <p className="font-medium text-slate-800">{product.name}</p>
                   {product.activePromotion ? (
                     <p className="mt-1 mb-3 flex items-baseline gap-2">
@@ -176,6 +176,7 @@ export default function PublicOrderPage() {
                       {formatCurrency(product.priceCents, currency)}
                     </p>
                   )}
+                  <div className="mt-auto">
                   {line ? (
                     <div className="flex items-center justify-between">
                       <button
@@ -197,6 +198,7 @@ export default function PublicOrderPage() {
                       +
                     </Button>
                   )}
+                  </div>
                 </div>
               </div>
             );

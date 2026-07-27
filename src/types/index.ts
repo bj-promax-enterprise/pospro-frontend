@@ -125,7 +125,7 @@ export interface Refund {
   items: RefundItem[];
 }
 
-export type OrderSourceType = "POS" | "SELF_ORDER";
+export type OrderSourceType = "POS" | "SELF_ORDER" | "DELIVERY";
 
 export interface Order {
   id: string;
@@ -136,6 +136,11 @@ export interface Order {
   status: OrderStatus;
   pickupNo: string | null;
   tableLabel: string | null;
+  deliveryAddress: string | null;
+  deliveryPhone: string | null;
+  memberId: string | null;
+  pointsEarned: number;
+  pointsRedeemed: number;
   subtotalCents: number;
   discountCents: number;
   taxCents: number;
@@ -145,6 +150,34 @@ export interface Order {
   payments: Payment[];
   refunds: Refund[];
   user?: { id: string; name: string } | null;
+  member?: { id: string; name: string; phone: string; pointsBalance: number } | null;
+}
+
+export interface Member {
+  id: string;
+  phone: string;
+  name: string;
+  pointsBalance: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export type CouponDiscountType = "PERCENT" | "FIXED";
+
+export interface Coupon {
+  id: string;
+  code: string;
+  memberId: string;
+  discountType: CouponDiscountType;
+  value: number;
+  redeemed: boolean;
+  redeemedAt: string | null;
+  orderId: string | null;
+  createdAt: string;
+}
+
+export interface MemberDetail extends Member {
+  coupons: Coupon[];
 }
 
 export interface AppUser {

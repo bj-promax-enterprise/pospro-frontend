@@ -9,12 +9,13 @@ import { cartSubtotalCents, useCartStore } from "../../stores/cartStore";
 import { useProductByBarcode } from "../../hooks/useProducts";
 import { useCheckout } from "../../hooks/useOrders";
 import { useStores } from "../../hooks/useStores";
+import { useMemberCoupons } from "../../hooks/useMembers";
 import { useAuthStore } from "../../stores/authStore";
 import { usePreferencesStore } from "../../stores/preferencesStore";
 import { formatCurrency } from "../../utils/currency";
 import { useT } from "../../i18n/useT";
 import ReceiptView from "../../components/pos/ReceiptView";
-import type { PaymentMethod } from "../../types";
+import type { Member, PaymentMethod } from "../../types";
 import type { Order } from "../../types";
 
 export default function CheckoutPage() {
@@ -40,8 +41,28 @@ export default function CheckoutPage() {
   const barcodeMutation = useProductByBarcode();
   const checkoutMutation = useCheckout();
 
+  const [member, setMember] = useState<Member | null>(null);
+  const [pointsToRedeem, setPointsToRedeem] = useState(0);
+  const [couponId, setCouponId] = useState<string | null>(null);
+  const { data: memberCoupons } = useMemberCoupons(member?.id, false);
+
   const subtotalCents = cartSubtotalCents(items);
-  const totalCents = Math.max(0, subtotalCents - discountCents);
+  const selectedCoupon = memberCoupons?.find((c) => c.id === couponId) ?? null;
+  const couponDiscountCents = selectedCoupon
+    ? Math.min(
+        selectedCoupon.discountType === "PERCENT"
+          ? Math.round((subtotalCents * selectedCoupon.value) / 100)
+          : selectedCoupon.value,
+        subtotalCents
+      )
+    : 0;
+  const totalCents = Math.max(0, subtotalCents - discountCents - pointsToRedeem - couponDiscountCents);
+
+  function resetMemberState() {
+    setMember(null);
+    setPointsToRedeem(0);
+    setCouponId(null);
+  }
 
   function handleScan(barcode: string) {
     setScanError(null);
@@ -55,6 +76,9 @@ export default function CheckoutPage() {
     try {
       const order = await checkoutMutation.mutateAsync({
         storeId: isAdmin ? storeId || undefined : undefined,
+        memberId: member?.id,
+        pointsToRedeem: pointsToRedeem > 0 ? pointsToRedeem : undefined,
+        couponId: couponId ?? undefined,
         items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
         discountCents,
         payments: [{ method, amountCents: totalCents }],
@@ -62,6 +86,7 @@ export default function CheckoutPage() {
       setReceipt(order);
       clear();
       setTenderedCents(0);
+      resetMemberState();
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error
@@ -72,7 +97,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="flex h-full">
-      <div className="flex flex-1 flex-col overflow-y-auto">
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
         <div className="border-b border-slate-200 bg-white p-4">
           {isAdmin && stores && stores.length > 0 && (
             <select
@@ -93,7 +118,14 @@ export default function CheckoutPage() {
       </div>
 
       <div className="flex w-96 flex-shrink-0 flex-col overflow-y-auto border-l border-slate-200 bg-white">
-        <CartPanel />
+        <CartPanel
+          member={member}
+          onMemberChange={setMember}
+          pointsToRedeem={pointsToRedeem}
+          onPointsToRedeemChange={setPointsToRedeem}
+          couponId={couponId}
+          onCouponChange={setCouponId}
+        />
         <PaymentPanel
           totalCents={totalCents}
           disabled={items.length === 0}

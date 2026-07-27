@@ -20,7 +20,7 @@ export default function LoginPage() {
     try {
       const { token, user } = await login(username, password);
       setAuth(token, user);
-      navigate("/checkout", { replace: true });
+      navigate("/", { replace: true });
     } catch {
       setError(t("login.error"));
     } finally {

@@ -17,6 +17,9 @@ import StoresPage from "./pages/Admin/StoresPage";
 import UsersPage from "./pages/Admin/UsersPage";
 import PublicOrderPage from "./pages/PublicOrder/PublicOrderPage";
 import PickupDisplayPage from "./pages/PublicOrder/PickupDisplayPage";
+import HomePage from "./pages/Home/HomePage";
+import MembersPage from "./pages/Members/MembersPage";
+import DeliveryOrdersPage from "./pages/Delivery/DeliveryOrdersPage";
 
 const queryClient = new QueryClient();
 
@@ -31,10 +34,11 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
-              <Route path="/" element={<Navigate to="/checkout" replace />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/orders" element={<OrderHistoryPage />} />
               <Route path="/orders/queue" element={<OrderQueuePage />} />
+              <Route path="/delivery" element={<DeliveryOrdersPage />} />
 
               <Route element={<ProtectedRoute allow={["ADMIN", "MANAGER"]} />}>
                 <Route path="/products" element={<ProductsPage />} />
@@ -45,6 +49,7 @@ function App() {
                 <Route path="/admin/suppliers" element={<SuppliersPage />} />
                 <Route path="/admin/tables" element={<TablesPage />} />
                 <Route path="/purchase-orders" element={<PurchaseOrdersPage />} />
+                <Route path="/members" element={<MembersPage />} />
               </Route>
 
               <Route element={<ProtectedRoute allow={["ADMIN"]} />}>
