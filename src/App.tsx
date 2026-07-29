@@ -17,6 +17,8 @@ import StoresPage from "./pages/Admin/StoresPage";
 import UsersPage from "./pages/Admin/UsersPage";
 import PublicOrderPage from "./pages/PublicOrder/PublicOrderPage";
 import PickupDisplayPage from "./pages/PublicOrder/PickupDisplayPage";
+import ReceiptDisplayPage from "./pages/PublicOrder/ReceiptDisplayPage";
+import TabDisplayPage from "./pages/PublicOrder/TabDisplayPage";
 import HomePage from "./pages/Home/HomePage";
 import MembersPage from "./pages/Members/MembersPage";
 import DeliveryOrdersPage from "./pages/Delivery/DeliveryOrdersPage";
@@ -31,6 +33,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/order/:storeId" element={<PublicOrderPage />} />
           <Route path="/pickup-display/:storeId" element={<PickupDisplayPage />} />
+          <Route path="/receipt/:orderId" element={<ReceiptDisplayPage />} />
+          <Route path="/tab-display/:storeId" element={<TabDisplayPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>

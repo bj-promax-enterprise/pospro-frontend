@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { usePeakHours, useReportsSummary, useRevenue, useStaffPerformance, useTopProducts } from "../../hooks/useReports";
 import { useStores } from "../../hooks/useStores";
+import Button from "../../components/ui/Button";
 import { useAuthStore } from "../../stores/authStore";
 import { usePreferencesStore } from "../../stores/preferencesStore";
 import { formatCurrency } from "../../utils/currency";
@@ -19,6 +20,23 @@ function isoDaysAgo(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() - days);
   return d.toISOString().slice(0, 10);
+}
+
+function csvEscape(value: string | number): string {
+  const str = String(value);
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+}
+
+function downloadCsv(filename: string, rows: (string | number)[][]) {
+  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\r\n");
+  // UTF-8 BOM so Excel on Windows renders Chinese characters correctly.
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export default function ReportsPage() {
@@ -47,6 +65,45 @@ export default function ReportsPage() {
   const { data: summary } = useReportsSummary(query);
   const { data: peakHours, isLoading: peakHoursLoading } = usePeakHours(query);
   const { data: staffPerformance } = useStaffPerformance(query);
+
+  function handleExport() {
+    const centsToAmount = (cents: number) => (cents / 100).toFixed(2);
+    const rows: (string | number)[][] = [];
+
+    rows.push([t("reports.title"), `${from} ${t("reports.to")} ${to}`]);
+    rows.push([]);
+    rows.push([t("reports.revenue"), t("reports.orderCount"), t("reports.refundAmount"), t("reports.avgOrderValue")]);
+    rows.push([
+      centsToAmount(summary?.totalRevenueCents ?? 0),
+      summary?.totalOrders ?? 0,
+      centsToAmount(summary?.totalRefundsCents ?? 0),
+      centsToAmount(summary?.avgOrderValueCents ?? 0),
+    ]);
+    rows.push([]);
+
+    rows.push([t("reports.revenueTrend")]);
+    rows.push([t("reports.date"), t("reports.revenue"), t("reports.orderCount")]);
+    (revenue ?? []).forEach((r) => rows.push([r.date, centsToAmount(r.revenueCents), r.orderCount]));
+    rows.push([]);
+
+    rows.push([t("reports.topProducts")]);
+    rows.push([t("reports.product"), t("reports.salesQty"), t("reports.salesAmount")]);
+    (topProducts ?? []).forEach((p) => rows.push([p.name, p.quantitySold, centsToAmount(p.revenueCents)]));
+    rows.push([]);
+
+    rows.push([t("reports.staffPerformance")]);
+    rows.push([t("reports.staff"), t("reports.orderCount"), t("reports.revenue"), t("reports.avgOrderValue")]);
+    (staffPerformance ?? []).forEach((s) =>
+      rows.push([
+        s.userName ?? t("reports.selfOrder"),
+        s.orderCount,
+        centsToAmount(s.revenueCents),
+        centsToAmount(s.avgOrderValueCents),
+      ])
+    );
+
+    downloadCsv(`report_${from}_${to}.csv`, rows);
+  }
 
   const chartData = (revenue ?? []).map((r) => ({ ...r, revenue: r.revenueCents / 100 }));
   const peakHoursData = (peakHours ?? []).map((p) => ({
@@ -81,6 +138,9 @@ export default function ReportsPage() {
             <option value="weekly">{t("reports.weekly")}</option>
             <option value="monthly">{t("reports.monthly")}</option>
           </select>
+          <Button variant="secondary" onClick={handleExport}>
+            {t("reports.exportCsv")}
+          </Button>
         </div>
       </div>
 

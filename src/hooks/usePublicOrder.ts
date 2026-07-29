@@ -10,6 +10,14 @@ export function usePublicProducts(storeId: string) {
   });
 }
 
+export function usePublicTables(storeId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["public-tables", storeId],
+    queryFn: () => publicApi.listPublicTables(storeId),
+    enabled: !!storeId && enabled,
+  });
+}
+
 export function useSubmitPublicOrder(storeId: string) {
   return useMutation({
     mutationFn: (input: SubmitPublicOrderInput) => publicApi.submitPublicOrder(storeId, input),
@@ -31,5 +39,22 @@ export function usePublicOrderStatus(orderId: string | null) {
     queryFn: () => publicApi.getPublicOrderStatus(orderId as string),
     enabled: !!orderId,
     refetchInterval: (query) => (query.state.data?.status === "COMPLETED" ? false : 4000),
+  });
+}
+
+export function usePublicReceipt(orderId: string | null) {
+  return useQuery({
+    queryKey: ["public-receipt", orderId],
+    queryFn: () => publicApi.getPublicReceipt(orderId as string),
+    enabled: !!orderId,
+  });
+}
+
+export function usePublicTableBill(storeId: string, label: string | null) {
+  return useQuery({
+    queryKey: ["public-table-bill", storeId, label],
+    queryFn: () => publicApi.getPublicTableBill(storeId, label as string),
+    enabled: !!storeId && !!label,
+    retry: false,
   });
 }

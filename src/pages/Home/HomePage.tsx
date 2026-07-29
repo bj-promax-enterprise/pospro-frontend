@@ -13,10 +13,9 @@ export default function HomePage() {
 
   return (
     <div className="p-6">
-      <h1 className="mb-1 text-xl font-semibold text-slate-800">
+      <h1 className="mb-6 text-xl font-semibold text-slate-800">
         {t("home.welcome", { name: user.name })}
       </h1>
-      <p className="mb-6 text-sm text-slate-500">{t("home.subtitle")}</p>
 
       <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6">
         {tiles.map((item) => {
@@ -25,10 +24,10 @@ export default function HomePage() {
             <Link
               key={item.to}
               to={item.to}
-              className="card card-hover touch-target flex flex-col items-center gap-3 py-6 text-center"
+              className="touch-target group flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white py-7 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-orange-300 hover:shadow-lg"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                <Icon size={26} strokeWidth={2} />
+              <div className="flex h-16 w-16 items-center justify-center text-orange-500 transition-transform duration-200 group-hover:scale-110">
+                <Icon size={34} strokeWidth={1.75} />
               </div>
               <span className="text-sm font-semibold text-slate-700">{t(item.labelKey)}</span>
             </Link>

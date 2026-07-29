@@ -21,6 +21,16 @@ export async function listPublicProducts(storeId: string): Promise<PublicProduct
   return data;
 }
 
+export interface PublicTable {
+  id: string;
+  label: string;
+}
+
+export async function listPublicTables(storeId: string): Promise<PublicTable[]> {
+  const { data } = await apiClient.get<{ items: PublicTable[] }>(`/public/stores/${storeId}/tables`);
+  return data.items;
+}
+
 export interface SubmitPublicOrderInput {
   items: { productId: string; quantity: number }[];
   tableLabel?: string;
@@ -64,5 +74,55 @@ export interface PublicOrderStatus {
 
 export async function getPublicOrderStatus(orderId: string): Promise<PublicOrderStatus> {
   const { data } = await apiClient.get<PublicOrderStatus>(`/public/orders/${orderId}/status`);
+  return data;
+}
+
+export interface PublicReceiptItem {
+  productNameSnapshot: string;
+  quantity: number;
+  unitPriceCents: number;
+  subtotalCents: number;
+}
+
+export interface PublicReceiptPayment {
+  method: PaymentMethod;
+  amountCents: number;
+}
+
+export interface PublicReceipt {
+  id: string;
+  orderNo: string;
+  storeName: string;
+  createdAt: string;
+  items: PublicReceiptItem[];
+  subtotalCents: number;
+  discountCents: number;
+  totalCents: number;
+  payments: PublicReceiptPayment[];
+}
+
+export async function getPublicReceipt(orderId: string): Promise<PublicReceipt> {
+  const { data } = await apiClient.get<PublicReceipt>(`/public/orders/${orderId}/receipt`);
+  return data;
+}
+
+export interface TableBillItem {
+  productNameSnapshot: string;
+  quantity: number;
+  unitPriceCents: number;
+  subtotalCents: number;
+}
+
+export interface TableBill {
+  tableLabel: string;
+  orderCount: number;
+  items: TableBillItem[];
+  totalCents: number;
+}
+
+export async function getPublicTableBill(storeId: string, label: string): Promise<TableBill> {
+  const { data } = await apiClient.get<TableBill>(
+    `/public/stores/${storeId}/tables/${encodeURIComponent(label)}/bill`
+  );
   return data;
 }
