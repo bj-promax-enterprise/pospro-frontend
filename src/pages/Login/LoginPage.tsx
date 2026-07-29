@@ -21,8 +21,9 @@ export default function LoginPage() {
       const { token, user } = await login(username, password);
       setAuth(token, user);
       navigate("/", { replace: true });
-    } catch {
-      setError(t("login.error"));
+    } catch (err: unknown) {
+      const hasResponse = (err as { response?: unknown })?.response !== undefined;
+      setError(hasResponse ? t("login.error") : t("login.serverUnreachable"));
     } finally {
       setLoading(false);
     }

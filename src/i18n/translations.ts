@@ -51,6 +51,7 @@ export const translations = {
       loginButton: "登录",
       loggingIn: "登录中...",
       error: "用户名或密码错误",
+      serverUnreachable: "无法连接服务器，请检查网络或联系管理员（这不是密码错误）",
     },
     products: {
       title: "商品管理",
@@ -550,6 +551,7 @@ export const translations = {
       loginButton: "Log In",
       loggingIn: "Logging in...",
       error: "Incorrect username or password",
+      serverUnreachable: "Can't reach the server — check your network or contact an admin (this isn't a wrong password)",
     },
     products: {
       title: "Products",
@@ -1049,6 +1051,7 @@ export const translations = {
       loginButton: "Log Masuk",
       loggingIn: "Sedang log masuk...",
       error: "Nama pengguna atau kata laluan salah",
+      serverUnreachable: "Tidak dapat menghubungi pelayan — semak rangkaian anda atau hubungi admin (ini bukan kata laluan salah)",
     },
     products: {
       title: "Pengurusan Produk",
