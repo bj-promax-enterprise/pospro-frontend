@@ -4,6 +4,7 @@ import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/Button";
 import { useT } from "../../i18n/useT";
 import { getLanInfo } from "../../api/public.api";
+import { appPath } from "../../utils/appPath";
 import type { Store } from "../../types";
 
 interface Props {
@@ -17,8 +18,8 @@ export default function StoreQrModal({ store, onClose }: Props) {
   const [origin, setOrigin] = useState(window.location.origin);
   const t = useT();
 
-  const url = store ? `${origin}/order/${store.id}` : "";
-  const pickupDisplayUrl = store ? `${origin}/pickup-display/${store.id}` : "";
+  const url = store ? `${origin}${appPath(`/order/${store.id}`)}` : "";
+  const pickupDisplayUrl = store ? `${origin}${appPath(`/pickup-display/${store.id}`)}` : "";
 
   useEffect(() => {
     if (!store) return;

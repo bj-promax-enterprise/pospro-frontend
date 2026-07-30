@@ -16,6 +16,7 @@ import type { TableBill } from "../../api/tables.api";
 import { useAuthStore } from "../../stores/authStore";
 import { usePreferencesStore } from "../../stores/preferencesStore";
 import { formatCurrency } from "../../utils/currency";
+import { appPath } from "../../utils/appPath";
 import { useT } from "../../i18n/useT";
 import ReceiptView from "../../components/pos/ReceiptView";
 import type { Member, PaymentMethod } from "../../types";
@@ -214,7 +215,7 @@ export default function CheckoutPage() {
               <Button
                 variant="secondary"
                 className="flex-1"
-                onClick={() => window.open(`/receipt/${receipt.id}`, "_blank")}
+                onClick={() => window.open(appPath(`/receipt/${receipt.id}`), "_blank")}
               >
                 {t("checkout.customerDisplay")}
               </Button>

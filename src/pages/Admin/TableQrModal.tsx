@@ -4,6 +4,7 @@ import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/Button";
 import { useT } from "../../i18n/useT";
 import { getLanInfo } from "../../api/public.api";
+import { appPath } from "../../utils/appPath";
 import type { Table } from "../../types";
 
 interface Props {
@@ -17,7 +18,9 @@ export default function TableQrModal({ table, onClose }: Props) {
   const [origin, setOrigin] = useState(window.location.origin);
   const t = useT();
 
-  const url = table ? `${origin}/order/${table.storeId}?table=${encodeURIComponent(table.label)}` : "";
+  const url = table
+    ? `${origin}${appPath(`/order/${table.storeId}`)}?table=${encodeURIComponent(table.label)}`
+    : "";
 
   useEffect(() => {
     if (!table) return;

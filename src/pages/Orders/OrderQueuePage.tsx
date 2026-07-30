@@ -3,6 +3,7 @@ import { useOrders, useUpdateOrderStatus } from "../../hooks/useOrders";
 import { useStores } from "../../hooks/useStores";
 import { useAuthStore } from "../../stores/authStore";
 import { useT } from "../../i18n/useT";
+import { appPath } from "../../utils/appPath";
 import type { Order, OrderStatus } from "../../types";
 
 const COLUMNS: { status: OrderStatus; labelKey: string; nextStatus: OrderStatus; actionKey: string }[] = [
@@ -98,7 +99,7 @@ export default function OrderQueuePage() {
             </select>
           )}
           <button
-            onClick={() => window.open(`/pickup-display/${displayStoreId}`, "_blank")}
+            onClick={() => window.open(appPath(`/pickup-display/${displayStoreId}`), "_blank")}
             disabled={!displayStoreId}
             className="touch-target rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-50"
           >
