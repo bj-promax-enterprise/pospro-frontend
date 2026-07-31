@@ -74,13 +74,14 @@ export default function StoreQrModal({ store, onClose }: Props) {
           </div>
           <div className="w-full border-t border-slate-100 pt-4">
             <p className="mb-2 text-xs text-slate-400">{t("admin.stores.pickupDisplayHint")}</p>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => window.open(pickupDisplayUrl, "_blank")}
+            <a
+              href={pickupDisplayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="touch-target flex min-h-[44px] w-full items-center justify-center rounded-lg bg-slate-200 px-4 text-center text-sm font-semibold text-slate-800 transition-all duration-150 hover:bg-slate-300 active:scale-[0.97]"
             >
               {t("admin.stores.pickupDisplayButton")}
-            </Button>
+            </a>
           </div>
         </div>
       )}

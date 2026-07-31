@@ -212,13 +212,14 @@ export default function CheckoutPage() {
               <Button variant="secondary" className="flex-1" onClick={() => window.print()}>
                 {t("orderDetail.printReceipt")}
               </Button>
-              <Button
-                variant="secondary"
-                className="flex-1"
-                onClick={() => window.open(appPath(`/receipt/${receipt.id}`), "_blank")}
+              <a
+                href={appPath(`/receipt/${receipt.id}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-target flex flex-1 min-h-[44px] items-center justify-center rounded-lg bg-slate-200 px-4 text-center text-sm font-semibold text-slate-800 transition-all duration-150 hover:bg-slate-300 active:scale-[0.97]"
               >
                 {t("checkout.customerDisplay")}
-              </Button>
+              </a>
               <Button className="flex-1" onClick={() => setReceipt(null)}>
                 {t("checkout.continueCheckout")}
               </Button>

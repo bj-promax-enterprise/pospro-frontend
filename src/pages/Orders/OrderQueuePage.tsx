@@ -98,13 +98,17 @@ export default function OrderQueuePage() {
               ))}
             </select>
           )}
-          <button
-            onClick={() => window.open(appPath(`/pickup-display/${displayStoreId}`), "_blank")}
-            disabled={!displayStoreId}
-            className="touch-target rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-50"
+          <a
+            href={displayStoreId ? appPath(`/pickup-display/${displayStoreId}`) : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={!displayStoreId}
+            className={`touch-target rounded-lg bg-slate-800 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-slate-700 ${
+              displayStoreId ? "" : "pointer-events-none opacity-50"
+            }`}
           >
             {t("orderQueue.openPickupDisplay")}
-          </button>
+          </a>
         </div>
       </div>
 
