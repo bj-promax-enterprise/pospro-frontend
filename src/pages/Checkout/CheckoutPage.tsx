@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BarcodeScanInput from "../../components/pos/BarcodeScanInput";
 import NfcCardInput from "../../components/pos/NfcCardInput";
+import WebNfcScanButton from "../../components/pos/WebNfcScanButton";
 import ProductGrid from "../../components/pos/ProductGrid";
 import CartPanel from "../../components/pos/CartPanel";
 import PaymentPanel from "../../components/pos/PaymentPanel";
@@ -182,9 +183,16 @@ export default function CheckoutPage() {
             </select>
           )}
           <BarcodeScanInput onScan={handleScan} onSearchChange={setSearch} errorMessage={scanError} />
-          <div className="mt-2">
-            <NfcCardInput onScan={handleCardScan} autoFocus={false} />
-            {cardError && <p className="mt-1 text-sm text-red-600">{cardError}</p>}
+          <div className="mt-2 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <NfcCardInput onScan={handleCardScan} autoFocus={false} />
+              </div>
+              <div className="flex-shrink-0">
+                <WebNfcScanButton onScan={handleCardScan} />
+              </div>
+            </div>
+            {cardError && <p className="text-sm text-red-600">{cardError}</p>}
           </div>
         </div>
         <ProductGrid search={search} onSelect={(product) => addItem(product)} />

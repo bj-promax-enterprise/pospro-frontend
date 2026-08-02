@@ -5,6 +5,7 @@ import { useStores } from "../../hooks/useStores";
 import { useAuthStore } from "../../stores/authStore";
 import { useT } from "../../i18n/useT";
 import TableQrModal from "./TableQrModal";
+import WriteNfcCardButton from "../../components/admin/WriteNfcCardButton";
 import type { Table } from "../../types";
 
 export default function TablesPage() {
@@ -96,18 +97,21 @@ export default function TablesPage() {
                 <tr key={tbl.id} className="border-t border-slate-100">
                   <td className="px-4 py-3 text-slate-700">{tbl.label}</td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => setQrTable(tbl)}
-                      className="touch-target mr-3 text-emerald-600 hover:underline"
-                    >
-                      {t("tables.qrButton")}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(tbl)}
-                      className="touch-target text-red-600 hover:underline"
-                    >
-                      {t("common.delete")}
-                    </button>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button
+                        onClick={() => setQrTable(tbl)}
+                        className="touch-target text-emerald-600 hover:underline"
+                      >
+                        {t("tables.qrButton")}
+                      </button>
+                      <WriteNfcCardButton label={tbl.label} />
+                      <button
+                        onClick={() => handleDelete(tbl)}
+                        className="touch-target text-red-600 hover:underline"
+                      >
+                        {t("common.delete")}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
