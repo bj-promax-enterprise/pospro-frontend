@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/layout/ProtectedRoute";
 import AppLayout from "./components/layout/AppLayout";
 import LoginPage from "./pages/Login/LoginPage";
 import CheckoutPage from "./pages/Checkout/CheckoutPage";
+import TableSettlePage from "./pages/Checkout/TableSettlePage";
 import ProductsPage from "./pages/Products/ProductsPage";
 import CategoriesPage from "./pages/Categories/CategoriesPage";
 import InventoryPage from "./pages/Inventory/InventoryPage";
@@ -40,6 +41,7 @@ function App() {
             <Route element={<AppLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/checkout/tables" element={<TableSettlePage />} />
               <Route path="/orders" element={<OrderHistoryPage />} />
               <Route path="/orders/queue" element={<OrderQueuePage />} />
               <Route path="/delivery" element={<DeliveryOrdersPage />} />
