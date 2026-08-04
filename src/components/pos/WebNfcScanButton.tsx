@@ -3,6 +3,7 @@ import { useT } from "../../i18n/useT";
 
 interface Props {
   onScan: (label: string) => void;
+  disabled?: boolean;
 }
 
 const ERROR_KEYS: Record<WebNfcScanError, string> = {
@@ -12,7 +13,7 @@ const ERROR_KEYS: Record<WebNfcScanError, string> = {
   "no-text-record": "nfc.webNfcNoTextRecord",
 };
 
-export default function WebNfcScanButton({ onScan }: Props) {
+export default function WebNfcScanButton({ onScan, disabled = false }: Props) {
   const t = useT();
   const { supported, scanning, error, start, stop } = useWebNfcScan(onScan);
 
@@ -33,7 +34,8 @@ export default function WebNfcScanButton({ onScan }: Props) {
       ) : (
         <button
           onClick={start}
-          className="touch-target rounded-lg bg-slate-800 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+          disabled={disabled}
+          className="touch-target rounded-lg bg-slate-800 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-slate-800"
         >
           {t("nfc.webNfcScanButton")}
         </button>

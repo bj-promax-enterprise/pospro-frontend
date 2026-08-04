@@ -126,6 +126,7 @@ export interface Refund {
 }
 
 export type OrderSourceType = "POS" | "SELF_ORDER" | "DELIVERY";
+export type DeliveryPlatform = "GRAB" | "SHOPEE_FOOD" | "FOODPANDA" | "OTHER";
 
 export interface Order {
   id: string;
@@ -138,6 +139,7 @@ export interface Order {
   tableLabel: string | null;
   deliveryAddress: string | null;
   deliveryPhone: string | null;
+  deliveryPlatform: DeliveryPlatform | null;
   memberId: string | null;
   pointsEarned: number;
   pointsRedeemed: number;

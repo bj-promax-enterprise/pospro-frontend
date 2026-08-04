@@ -8,7 +8,9 @@ import { useAuthStore } from "../../stores/authStore";
 import { usePreferencesStore } from "../../stores/preferencesStore";
 import { formatCurrency } from "../../utils/currency";
 import { useT } from "../../i18n/useT";
-import type { PaymentMethod } from "../../types";
+import type { DeliveryPlatform, PaymentMethod } from "../../types";
+
+const PLATFORMS: DeliveryPlatform[] = ["GRAB", "SHOPEE_FOOD", "FOODPANDA", "OTHER"];
 
 interface Props {
   open: boolean;
@@ -32,6 +34,7 @@ export default function DeliveryOrderFormModal({ open, onClose }: Props) {
   const [storeId, setStoreId] = useState(user?.storeId ?? "");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [platform, setPlatform] = useState<DeliveryPlatform>("GRAB");
   const [method, setMethod] = useState<PaymentMethod>("CASH");
   const [rows, setRows] = useState<Row[]>([{ productId: "", quantity: 1 }]);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +44,7 @@ export default function DeliveryOrderFormModal({ open, onClose }: Props) {
       setStoreId(user?.storeId ?? "");
       setAddress("");
       setPhone("");
+      setPlatform("GRAB");
       setMethod("CASH");
       setRows([{ productId: "", quantity: 1 }]);
       setError(null);
@@ -90,6 +94,7 @@ export default function DeliveryOrderFormModal({ open, onClose }: Props) {
         source: "DELIVERY",
         deliveryAddress: address,
         deliveryPhone: phone,
+        deliveryPlatform: platform,
         items,
         payments: [{ method, amountCents: totalCents }],
       });
@@ -127,6 +132,21 @@ export default function DeliveryOrderFormModal({ open, onClose }: Props) {
         rows={2}
         className="input mb-4"
       />
+
+      <label className="mb-1 block text-sm font-medium text-slate-600">{t("delivery.platform")}</label>
+      <div className="mb-4 grid grid-cols-4 gap-2">
+        {PLATFORMS.map((p) => (
+          <button
+            key={p}
+            onClick={() => setPlatform(p)}
+            className={`touch-target rounded-lg py-2.5 text-sm font-semibold ${
+              platform === p ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"
+            }`}
+          >
+            {t(`delivery.platformLabel.${p}`)}
+          </button>
+        ))}
+      </div>
 
       <div className="mb-2 max-h-64 overflow-y-auto">
         <table className="w-full text-left text-sm">

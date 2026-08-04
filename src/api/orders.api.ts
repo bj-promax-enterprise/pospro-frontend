@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { Order, PaymentMethod } from "../types";
+import type { DeliveryPlatform, Order, PaymentMethod } from "../types";
 
 export interface CheckoutItem {
   productId: string;
@@ -17,6 +17,7 @@ export interface CheckoutInput {
   source?: "POS" | "DELIVERY";
   deliveryAddress?: string;
   deliveryPhone?: string;
+  deliveryPlatform?: DeliveryPlatform;
   memberId?: string;
   pointsToRedeem?: number;
   couponId?: string;

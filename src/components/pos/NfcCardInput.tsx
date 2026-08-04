@@ -4,6 +4,7 @@ import { useT } from "../../i18n/useT";
 interface Props {
   onScan: (cardUid: string) => void;
   autoFocus?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -12,13 +13,13 @@ interface Props {
  * iPad Safari has no Web NFC support, so this keyboard-wedge input is the
  * only realistic way to read a card from a browser.
  */
-export default function NfcCardInput({ onScan, autoFocus = true }: Props) {
+export default function NfcCardInput({ onScan, autoFocus = true, disabled = false }: Props) {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const t = useT();
 
   useEffect(() => {
-    if (!autoFocus) return;
+    if (!autoFocus || disabled) return;
     inputRef.current?.focus();
     function refocus(e: MouseEvent) {
       const target = e.target as HTMLElement;
@@ -27,7 +28,7 @@ export default function NfcCardInput({ onScan, autoFocus = true }: Props) {
     }
     window.addEventListener("click", refocus);
     return () => window.removeEventListener("click", refocus);
-  }, [autoFocus]);
+  }, [autoFocus, disabled]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && value.trim()) {
@@ -43,8 +44,9 @@ export default function NfcCardInput({ onScan, autoFocus = true }: Props) {
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={handleKeyDown}
       placeholder={t("nfc.placeholder")}
-      className="input text-lg"
+      className="input text-lg disabled:cursor-not-allowed disabled:opacity-50"
       autoComplete="off"
+      disabled={disabled}
     />
   );
 }

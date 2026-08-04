@@ -1,6 +1,21 @@
 import { useParams } from "react-router-dom";
 import { usePickupBoard } from "../../hooks/usePublicOrder";
+import type { PickupBoardEntry } from "../../api/public.api";
 import { useT } from "../../i18n/useT";
+
+// Matches each platform's real brand color so staff can recognize the source
+// at a glance without reading the text label.
+const SOURCE_BADGE: Record<string, string> = {
+  SELF_ORDER: "bg-slate-600 text-slate-100",
+  GRAB: "bg-[#00B14F] text-white",
+  SHOPEE_FOOD: "bg-[#EE4D2D] text-white",
+  FOODPANDA: "bg-[#D70F64] text-white",
+  OTHER: "bg-slate-500 text-white",
+}
+
+function sourceKey(o: PickupBoardEntry): string {
+  return o.source === "DELIVERY" ? o.deliveryPlatform ?? "OTHER" : "SELF_ORDER";
+}
 
 export default function PickupDisplayPage() {
   const { storeId = "" } = useParams<{ storeId: string }>();
@@ -30,6 +45,11 @@ export default function PickupDisplayPage() {
                 >
                   <div className="text-4xl font-extrabold tracking-widest">{o.pickupNo}</div>
                   {o.tableLabel && <div className="mt-1 text-sm text-slate-400">{o.tableLabel}</div>}
+                  <div
+                    className={`mx-auto mt-2 inline-block rounded-full px-3 py-0.5 text-xs font-semibold ${SOURCE_BADGE[sourceKey(o)]}`}
+                  >
+                    {t(`pickupDisplay.source.${sourceKey(o)}`)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -51,6 +71,11 @@ export default function PickupDisplayPage() {
                 >
                   <div className="text-5xl font-extrabold tracking-widest">{o.pickupNo}</div>
                   {o.tableLabel && <div className="mt-1 text-base font-semibold">{o.tableLabel}</div>}
+                  <div
+                    className={`mx-auto mt-2 inline-block rounded-full px-3 py-0.5 text-xs font-semibold ${SOURCE_BADGE[sourceKey(o)]}`}
+                  >
+                    {t(`pickupDisplay.source.${sourceKey(o)}`)}
+                  </div>
                 </div>
               ))}
             </div>

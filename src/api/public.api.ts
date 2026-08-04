@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { ActivePromotion, Order, PaymentMethod } from "../types";
+import type { ActivePromotion, DeliveryPlatform, Order, OrderSourceType, PaymentMethod } from "../types";
 
 export interface PublicProduct {
   id: string;
@@ -52,6 +52,8 @@ export interface PickupBoardEntry {
   id: string;
   pickupNo: string | null;
   tableLabel: string | null;
+  source: OrderSourceType;
+  deliveryPlatform: DeliveryPlatform | null;
 }
 
 export interface PickupBoardResult {
