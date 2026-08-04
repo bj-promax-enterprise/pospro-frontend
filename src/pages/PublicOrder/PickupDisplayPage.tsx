@@ -14,6 +14,10 @@ const SOURCE_BADGE: Record<string, string> = {
 };
 
 const SOURCE_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA", "OTHER"] as const;
+// The first four are always shown, in this fixed order, so the layout stays
+// stable as orders come and go. OTHER (delivery orders with no platform set)
+// is an edge case, shown only when it actually has something in it.
+const ALWAYS_SHOWN_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA"] as const;
 
 function sourceKey(o: PickupBoardEntry): string {
   return o.source === "DELIVERY" ? o.deliveryPlatform ?? "OTHER" : "SELF_ORDER";
@@ -73,17 +77,19 @@ export default function PickupDisplayPage() {
           <h2 className="mb-6 text-center text-xl font-semibold text-red-400">
             {t("pickupDisplay.readyColumn")}
           </h2>
-          {ready.length === 0 ? (
-            <p className="text-center text-slate-600">{t("pickupDisplay.noOrders")}</p>
-          ) : (
-            <div className="space-y-6">
-              {SOURCE_GROUPS.filter((key) => readyGroups[key].length > 0).map((key) => (
-                <div key={key}>
-                  <div
-                    className={`mb-3 inline-block rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
-                  >
-                    {t(`pickupDisplay.source.${key}`)} ({readyGroups[key].length})
-                  </div>
+          <div className="space-y-6">
+            {SOURCE_GROUPS.filter(
+              (key) => ALWAYS_SHOWN_GROUPS.includes(key as (typeof ALWAYS_SHOWN_GROUPS)[number]) || readyGroups[key].length > 0
+            ).map((key) => (
+              <div key={key}>
+                <div
+                  className={`mb-3 inline-block rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
+                >
+                  {t(`pickupDisplay.source.${key}`)} ({readyGroups[key].length})
+                </div>
+                {readyGroups[key].length === 0 ? (
+                  <p className="text-sm text-slate-600">{t("pickupDisplay.noOrders")}</p>
+                ) : (
                   <div className="grid grid-cols-3 gap-4">
                     {readyGroups[key].map((o) => (
                       <div
@@ -95,10 +101,10 @@ export default function PickupDisplayPage() {
                       </div>
                     ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
