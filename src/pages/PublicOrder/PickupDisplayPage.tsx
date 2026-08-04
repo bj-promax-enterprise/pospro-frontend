@@ -77,20 +77,20 @@ export default function PickupDisplayPage() {
           <h2 className="mb-6 text-center text-xl font-semibold text-red-400">
             {t("pickupDisplay.readyColumn")}
           </h2>
-          <div className="space-y-6">
+          <div className="flex flex-1 items-start gap-4">
             {SOURCE_GROUPS.filter(
               (key) => ALWAYS_SHOWN_GROUPS.includes(key as (typeof ALWAYS_SHOWN_GROUPS)[number]) || readyGroups[key].length > 0
             ).map((key) => (
-              <div key={key}>
+              <div key={key} className="flex min-w-0 flex-1 flex-col items-center">
                 <div
-                  className={`mb-3 inline-block rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
+                  className={`mb-3 inline-block whitespace-nowrap rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
                 >
                   {t(`pickupDisplay.source.${key}`)} ({readyGroups[key].length})
                 </div>
                 {readyGroups[key].length === 0 ? (
                   <p className="text-sm text-slate-600">{t("pickupDisplay.noOrders")}</p>
                 ) : (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="flex w-full flex-col gap-3">
                     {readyGroups[key].map((o) => (
                       <div
                         key={o.id}
