@@ -14,10 +14,19 @@ const SOURCE_BADGE: Record<string, string> = {
 };
 
 const SOURCE_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA", "OTHER"] as const;
-// The first four are always shown, in this fixed order, so the layout stays
-// stable as orders come and go. OTHER (delivery orders with no platform set)
-// is an edge case, shown only when it actually has something in it.
-const ALWAYS_SHOWN_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA"] as const;
+// These four always render, in this fixed order, so the layout stays stable
+// as orders come and go. OTHER (delivery orders with no platform set) never
+// gets its own column on the board — it's legacy/edge-case data, not a real
+// channel — so it's simply left out of the pickup display entirely.
+const READY_DISPLAY_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA"] as const;
+// In-store is normally the busiest channel, so it gets more width than each
+// delivery-platform column.
+const GROUP_WIDTH: Record<string, string> = {
+  SELF_ORDER: "flex-[2]",
+  GRAB: "flex-1",
+  SHOPEE_FOOD: "flex-1",
+  FOODPANDA: "flex-1",
+};
 
 function sourceKey(o: PickupBoardEntry): string {
   return o.source === "DELIVERY" ? o.deliveryPlatform ?? "OTHER" : "SELF_ORDER";
@@ -78,10 +87,8 @@ export default function PickupDisplayPage() {
             {t("pickupDisplay.readyColumn")}
           </h2>
           <div className="flex flex-1 items-start gap-4">
-            {SOURCE_GROUPS.filter(
-              (key) => ALWAYS_SHOWN_GROUPS.includes(key as (typeof ALWAYS_SHOWN_GROUPS)[number]) || readyGroups[key].length > 0
-            ).map((key) => (
-              <div key={key} className="flex min-w-0 flex-1 flex-col items-center">
+            {READY_DISPLAY_GROUPS.map((key) => (
+              <div key={key} className={`flex min-w-0 flex-col items-center ${GROUP_WIDTH[key]}`}>
                 <div
                   className={`mb-3 inline-block whitespace-nowrap rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
                 >
