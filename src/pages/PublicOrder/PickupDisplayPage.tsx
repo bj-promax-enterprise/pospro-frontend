@@ -97,13 +97,13 @@ export default function PickupDisplayPage() {
                 {readyGroups[key].length === 0 ? (
                   <p className="text-sm text-slate-600">{t("pickupDisplay.noOrders")}</p>
                 ) : (
-                  <div className="flex w-full flex-col gap-3">
+                  <div className="flex flex-wrap content-start justify-center gap-3">
                     {readyGroups[key].map((o) => (
                       <div
                         key={o.id}
-                        className="animate-pulse rounded-2xl bg-red-600 py-6 text-center text-white shadow-lg shadow-red-900/50"
+                        className="flex h-28 w-32 animate-pulse flex-col items-center justify-center rounded-2xl bg-red-600 text-center text-white shadow-lg shadow-red-900/50"
                       >
-                        <div className="text-5xl font-extrabold tracking-widest">{o.pickupNo}</div>
+                        <div className="text-4xl font-extrabold tracking-widest">{o.pickupNo}</div>
                         {o.tableLabel && <div className="mt-1 text-base font-semibold">{o.tableLabel}</div>}
                       </div>
                     ))}
