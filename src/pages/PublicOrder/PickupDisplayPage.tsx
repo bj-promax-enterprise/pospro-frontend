@@ -11,10 +11,22 @@ const SOURCE_BADGE: Record<string, string> = {
   SHOPEE_FOOD: "bg-[#EE4D2D] text-white",
   FOODPANDA: "bg-[#D70F64] text-white",
   OTHER: "bg-slate-500 text-white",
-}
+};
+
+const SOURCE_GROUPS = ["SELF_ORDER", "GRAB", "SHOPEE_FOOD", "FOODPANDA", "OTHER"] as const;
 
 function sourceKey(o: PickupBoardEntry): string {
   return o.source === "DELIVERY" ? o.deliveryPlatform ?? "OTHER" : "SELF_ORDER";
+}
+
+function groupBySource(orders: PickupBoardEntry[]): Record<string, PickupBoardEntry[]> {
+  const groups: Record<string, PickupBoardEntry[]> = {};
+  for (const key of SOURCE_GROUPS) groups[key] = [];
+  for (const o of orders) {
+    const key = sourceKey(o);
+    (groups[key] ??= []).push(o);
+  }
+  return groups;
 }
 
 export default function PickupDisplayPage() {
@@ -24,6 +36,7 @@ export default function PickupDisplayPage() {
 
   const preparing = data?.preparing ?? [];
   const ready = data?.ready ?? [];
+  const readyGroups = groupBySource(ready);
 
   return (
     <div className="flex h-screen flex-col bg-slate-950 text-white">
@@ -63,18 +76,24 @@ export default function PickupDisplayPage() {
           {ready.length === 0 ? (
             <p className="text-center text-slate-600">{t("pickupDisplay.noOrders")}</p>
           ) : (
-            <div className="grid grid-cols-3 gap-4">
-              {ready.map((o) => (
-                <div
-                  key={o.id}
-                  className="animate-pulse rounded-2xl bg-red-600 py-6 text-center text-white shadow-lg shadow-red-900/50"
-                >
-                  <div className="text-5xl font-extrabold tracking-widest">{o.pickupNo}</div>
-                  {o.tableLabel && <div className="mt-1 text-base font-semibold">{o.tableLabel}</div>}
+            <div className="space-y-6">
+              {SOURCE_GROUPS.filter((key) => readyGroups[key].length > 0).map((key) => (
+                <div key={key}>
                   <div
-                    className={`mx-auto mt-2 inline-block rounded-full px-3 py-0.5 text-xs font-semibold ${SOURCE_BADGE[sourceKey(o)]}`}
+                    className={`mb-3 inline-block rounded-full px-3 py-1 text-sm font-bold ${SOURCE_BADGE[key]}`}
                   >
-                    {t(`pickupDisplay.source.${sourceKey(o)}`)}
+                    {t(`pickupDisplay.source.${key}`)} ({readyGroups[key].length})
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    {readyGroups[key].map((o) => (
+                      <div
+                        key={o.id}
+                        className="animate-pulse rounded-2xl bg-red-600 py-6 text-center text-white shadow-lg shadow-red-900/50"
+                      >
+                        <div className="text-5xl font-extrabold tracking-widest">{o.pickupNo}</div>
+                        {o.tableLabel && <div className="mt-1 text-base font-semibold">{o.tableLabel}</div>}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
